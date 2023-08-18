@@ -15,10 +15,12 @@ elif (name == "ARNESH"):
 import pyaudio
 import wave
 import time
-
+import speech_recognition as sr
+from pydub import AudioSegment
+from os import path
 # Remove Audio
 def removeAudio():
-    time.sleep(10)
+    time.sleep(5)
     os.remove("output.wav") 
 
 CHUNK = 1024
@@ -57,6 +59,15 @@ wf.close()
 
 greet = "output.wav"
 os.system("afplay " + greet)
+
+AUDIO_FILE = "output.wav"
+r = sr.Recognizer()
+with sr.AudioFile(AUDIO_FILE) as source:
+        audio = r.record(source)  # read the entire audio file                  
+
+        print("Transcription: " + r.recognize_google(audio))
+
+
 removeAudio()
 
 
