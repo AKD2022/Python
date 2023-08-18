@@ -63,7 +63,7 @@ os.system("afplay " + greet)
 AUDIO_FILE = "output.wav"
 r = sr.Recognizer()
 with sr.AudioFile(AUDIO_FILE) as source:
-        audio = r.record(source)  # read the entire audio file                  
+        audio = r.record(source)                  
 
         print("Transcription: " + r.recognize_google(audio))
 
