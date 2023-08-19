@@ -1,75 +1,104 @@
-# Basic Format
-import os
-name = input("What is your name?\n")
-name = name.upper()
-
-if (name != "ARNESH"):
-    greet = "AudioFiles/Hello.wav"
-    os.system("afplay " + greet)
-elif (name == "ARNESH"):
-    greetA = "AudioFiles/HelloArnesh.wav"
-    os.system("afplay " + greetA)
-#
-
 # Trying to use microphone for input
+import os
 import pyaudio
 import wave
 import time
 import speech_recognition as sr
 from pydub import AudioSegment
 from os import path
-# Remove Audio
+from gtts import gTTS
+
+# Creating Functions 
+
+# Remove Audio(s)
 def removeAudio():
-    time.sleep(5)
     os.remove("output.wav") 
 
-CHUNK = 1024
-FORMAT = pyaudio.paInt16
-CHANNELS = 1
-RATE = 44100
+def removeAudio2():
+    os.remove("output2.wav")
 
-p = pyaudio.PyAudio()
+# Convert Audio to Text 
+def convertAudioToText():
+    r = sr.Recognizer()
+    AUDIOFILE = "output.wav"
+    r = sr.Recognizer()
+    with sr.AudioFile(AUDIOFILE) as source:
+            audio = r.record(source)                  
+            return(r.recognize_google(audio))
+    
+# Convert Text to Audio 
+def convertTextToAudio():
+     language = 'en'
+     myobj = gTTS(text=mytext, lang=language, slow=False)
+     myobj.save("output2.wav")
+     os.system("afplay output2.wav")
 
-stream = p.open(format = FORMAT,
-    channels=CHANNELS,
-    rate=RATE,
-    input=True,
-    frames_per_buffer=CHUNK)
+# Record Audio Function
+def recordAudio():
+    CHUNK = 1024
+    FORMAT = pyaudio.paInt16
+    CHANNELS = 1
+    RATE = 44100
 
-print("recording started")
+    p = pyaudio.PyAudio()
 
-frames = []
-seconds = 3
-for i in range(0, int(RATE / CHUNK * seconds)):
-    data = stream.read(CHUNK)
-    frames.append(data)
-
-print("recording finished")
-
-stream.stop_stream()
-stream.close()
-p.terminate()
-
-wf = wave.open("output.wav", 'wb')
-wf.setnchannels(CHANNELS)
-wf.setsampwidth(p.get_sample_size(FORMAT))
-wf.setframerate(RATE)
-wf.writeframes(b''.join(frames))
-wf.close()
-
-greet = "output.wav"
-os.system("afplay " + greet)
-
-AUDIO_FILE = "output.wav"
-r = sr.Recognizer()
-with sr.AudioFile(AUDIO_FILE) as source:
-        audio = r.record(source)                  
-
-        print("Transcription: " + r.recognize_google(audio))
+    stream = p.open(format = FORMAT,
+        channels=CHANNELS,
+        rate=RATE,
+        input=True,
+        frames_per_buffer=CHUNK)
 
 
+    frames = []
+    seconds = 3
+    for i in range(0, int(RATE / CHUNK * seconds)):
+        data = stream.read(CHUNK)
+        frames.append(data)
+
+
+    stream.stop_stream()
+    stream.close()
+    p.terminate()
+
+    wf = wave.open("output.wav", 'wb')
+    wf.setnchannels(CHANNELS)
+    wf.setsampwidth(p.get_sample_size(FORMAT))
+    wf.setframerate(RATE)
+    wf.writeframes(b''.join(frames))    
+    wf.close()  
+
+# Play Audio
+def playAudio():
+    r = sr.Recognizer()
+    play = "output.wav"
+    os.system("afplay " + play)
+
+# Basic Format
+print("What is your name? (Say it)")
+recordAudio() 
+name = convertAudioToText()
+print("I heard: " + str(name) + " was that correct?")
 removeAudio()
 
+recordAudio()
+response = convertAudioToText()
+response.lower()
 
+if ('y' in response):
+    print("Ok, great! Syncing now!")
+    time.sleep(1)
+    print("...")
+    time.sleep(3)
+    print("Syncing Complete")
+elif ('n' in response):
+    name = input("Alright, type in your name: ")
+    print("Ok, great! Syncing now!")
+    time.sleep(1)
+    print("...")
+    time.sleep(3)
+    print("Syncing Complete")
 
-
+mytext = ("Great! Hello " + name + ", my name is AK, and I am your personal voice assistant")
+convertTextToAudio()
+removeAudio()
+removeAudio2()
