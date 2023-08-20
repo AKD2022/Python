@@ -10,6 +10,7 @@ from gtts import gTTS
 
 # Creating Functions 
 
+
 # Remove Audio(s)
 def removeAudio():
     os.remove("output.wav") 
@@ -19,19 +20,17 @@ def removeAudio2():
 
 # Convert Audio to Text 
 def convertAudioToText():
-    r = sr.Recognizer()
     AUDIOFILE = "output.wav"
     r = sr.Recognizer()
     with sr.AudioFile(AUDIOFILE) as source:
             audio = r.record(source)                  
             return(r.recognize_google(audio))
-    
-# Convert Text to Audio 
+
+# Convert Text to Audio
 def convertTextToAudio():
-     language = 'en'
-     myobj = gTTS(text=mytext, lang=language, slow=False)
-     myobj.save("output2.wav")
-     os.system("afplay output2.wav")
+    myobj = gTTS(text=speech, lang='en', slow=False)
+    myobj.save("output2.wav")
+    os.system("afplay output2.wav")
 
 # Record Audio Function
 def recordAudio():
@@ -74,31 +73,59 @@ def playAudio():
     os.system("afplay " + play)
 
 # Basic Format
-print("What is your name? (Say it)")
+speech = "What is your name?"
+print(speech)
+# Converting Text to Audio
+convertTextToAudio()
+
+# Record Name
 recordAudio() 
 name = convertAudioToText()
-print("I heard: " + str(name) + " was that correct?")
-removeAudio()
+
+# Print Name
+speech = "I heard: " + str(name) + ", was that correct?"
+print(speech)
+# Converting to Audio
+convertTextToAudio()
+
+
+
 
 recordAudio()
 response = convertAudioToText()
 response.lower()
 
 if ('y' in response):
-    print("Ok, great! Syncing now!")
+    speech = "Syncing now!"
+    print(speech)
+    convertTextToAudio()
     time.sleep(1)
     print("...")
     time.sleep(3)
-    print("Syncing Complete")
-elif ('n' in response):
-    name = input("Alright, type in your name: ")
-    print("Ok, great! Syncing now!")
-    time.sleep(1)
-    print("...")
-    time.sleep(3)
-    print("Syncing Complete")
+    speech = "Syncing Complete"
+    print(speech)
+    convertTextToAudio()
 
-mytext = ("Great! Hello " + name + ", my name is AK, and I am your personal voice assistant")
+elif ('n' in response):
+    speech = "Alright, type in your name"     
+    convertTextToAudio()
+    name = input("Name: ")
+
+    speech = "Syncing Now!"
+    print(speech)
+    convertTextToAudio()
+    time.sleep(1)
+    print("...")
+    time.sleep(3)
+    speech = "Syncing Complete"
+    print(speech)
+    convertTextToAudio()
+
+
+speech = "Great! Hello, " + name + ", my name is AK, and I am your personal voice assistant"
+print(speech)
 convertTextToAudio()
+
+
 removeAudio()
 removeAudio2()
