@@ -10,7 +10,6 @@ from gtts import gTTS
 
 # Creating Functions 
 
-
 # Remove Audio(s)
 def removeAudio():
     os.remove("output.wav") 
