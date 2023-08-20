@@ -27,7 +27,7 @@ def convertAudioToText():
 
 # Convert Text to Audio
 def convertTextToAudio():
-    myobj = gTTS(text=speech, lang='en', slow=False)
+    myobj = gTTS(text=speech, lang="en", slow=False)
     myobj.save("output2.wav")
     os.system("afplay output2.wav")
 
@@ -79,6 +79,7 @@ convertTextToAudio()
 
 # Record Name
 recordAudio() 
+time.sleep(1)
 name = convertAudioToText()
 
 # Print Name
@@ -86,9 +87,6 @@ speech = "I heard: " + str(name) + ", was that correct?"
 print(speech)
 # Converting to Audio
 convertTextToAudio()
-
-
-
 
 recordAudio()
 response = convertAudioToText()
